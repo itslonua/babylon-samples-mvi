@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">MVI Sample App</string>
+    <string name="title_activity_splash">App MVI Demo</string>
+    <string name="dummy_content">Demo App</string>
+    <string name="post_title">Title: %s</string>
+    <string name="post_body">Body: %s</string>
+    <string name="post_author">Author: %s</string>
+    <string name="post_comments">Comments: %d</string>
+</resources>
