@@ -25,8 +25,8 @@ internal class UserDataRepository(
     }
 
     @SuppressLint("CheckResult")
-    override fun save(users: List<User>): Single<Unit> {
-        return Single.just(users)
+    override fun save(userEntity: List<User>): Single<Unit> {
+        return Single.just(userEntity)
             .map(UserEntityMapper::usersToDatabase)
             .flatMap(localDatasource::updateUsers)
             .subscribeOn(schedulers.io())
