@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.Toast
 import com.babylone.playbook.R
 import com.babylone.playbook.core.ext.bindToUi
+import com.babylone.playbook.core.recycler.DefaultItemAnimatorNoChange
 import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
@@ -34,6 +35,7 @@ class MainActivity : AppCompatActivity(), MainActivityView {
             adapter = postAdapter
             layoutManager = LinearLayoutManager(this@MainActivity)
             addItemDecoration(MainActivityItemDecorator(resources.getDimension(R.dimen.list_offset).toInt()))
+            itemAnimator = DefaultItemAnimatorNoChange()
         }
 
         activity_main_refresh.setOnRefreshListener { presenter.reloadScreen() }
@@ -55,13 +57,21 @@ class MainActivity : AppCompatActivity(), MainActivityView {
         state.resource.bindToUi({
             activity_main_progress.visibility = View.GONE
             activity_main_refresh.isRefreshing = false
-            resource.data?.let { postAdapter.swap(it) }
+            resource.data?.let {
+                postAdapter.swap(it) {
+                    previous, new ->
+                    MainItemDiffUtilsCallback(previous, new)
+                }
+            }
+            activity_main_recycler.visibility = View.VISIBLE
         }, {
             activity_main_progress.visibility = View.GONE
+            activity_main_recycler.visibility = View.GONE
             activity_main_refresh.isRefreshing = false
             Toast.makeText(this, resource.throwable?.message, Toast.LENGTH_SHORT).show()
         }, {
             activity_main_progress.visibility = View.VISIBLE
+            activity_main_recycler.visibility = View.GONE
         })
     }
 

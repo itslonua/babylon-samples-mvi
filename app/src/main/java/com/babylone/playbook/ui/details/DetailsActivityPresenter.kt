@@ -17,7 +17,7 @@ class DetailsActivityPresenter(
         data class OpenPostDetails(val postId: Int) : Action()
     }
 
-    private fun transformer(): ObservableTransformer<Action, DetailsPartialViewState> {
+    private fun actionsTransformer(): ObservableTransformer<Action, DetailsPartialViewState> {
         return ObservableTransformer { actions ->
             actions.ofType(Action.OpenPostDetails::class.java)
                 .compose(loadPostDetails())
@@ -44,7 +44,7 @@ class DetailsActivityPresenter(
         super.onFirstViewAttach()
         observeAction()
             .compose(bindObservableLifecycleTransformer())
-            .compose(transformer())
+            .compose(actionsTransformer())
             .scan(DetailsViewState.init(), detailsReducer())
             .distinctUntilChanged()
             .observeOn(schedulers.mainThread())

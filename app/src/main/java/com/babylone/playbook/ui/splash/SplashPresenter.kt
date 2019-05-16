@@ -20,7 +20,7 @@ class SplashPresenter(
     private fun prefetchTransformer(): ObservableTransformer<SplashAction.Initialize, SplashPartialViewState> =
         ObservableTransformer { action ->
             action.switchMap {
-                loaderUseCase.prefetch()
+                loaderUseCase.prefetch().toObservable()
                     .map { Resource.success(true) }
                     .onErrorReturn { error -> Resource.error(error) }
                     .startWith(Resource.loading())
