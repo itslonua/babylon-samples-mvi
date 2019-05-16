@@ -1,6 +1,5 @@
 package com.babylone.playbook.core.mvp
 
-import android.support.annotation.VisibleForTesting
 import io.reactivex.*
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.ReplaySubject
@@ -11,9 +10,8 @@ abstract class MviPresenter<Action, Result, State, View : MviView> {
     protected var viewState: View? = null
 
     private var disposeEvent = PublishSubject.create<Boolean>()
-    private val intentSubject = PublishSubject.create<Action>()
-    @VisibleForTesting
-    val testConsumer = ReplaySubject.create<State>()
+    private val actionSubject = PublishSubject.create<Action>()
+    private val stateConsumer = ReplaySubject.create<State>()
 
     protected fun <T> bindFlowableLifecycleTransformer(): FlowableTransformer<T, T> {
         return FlowableTransformer { upstream ->
@@ -61,19 +59,19 @@ abstract class MviPresenter<Action, Result, State, View : MviView> {
         disposeEvent.onComplete()
     }
 
-    protected fun observeAction() = intentSubject.toSerialized()
+    protected fun observeAction() = actionSubject.toSerialized()
 
     fun onAction(action: Action) {
-        intentSubject.onNext(action)
+        actionSubject.onNext(action)
     }
 
-    fun bindTestSubject(): ObservableTransformer<State, State> {
+    fun bindStateSubject(): ObservableTransformer<State, State> {
         return ObservableTransformer { actions ->
-            actions.doOnNext { testConsumer.onNext(it) }
+            actions.doOnNext { stateConsumer.onNext(it) }
         }
     }
 
-    fun testSubject() = testConsumer
+    fun stateSubject() = stateConsumer
 
     open fun onFirstViewAttach() {}
 

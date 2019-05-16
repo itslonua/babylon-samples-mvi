@@ -61,7 +61,7 @@ class MainActivityPresenter(
                 .autoConnect(0)
                 .distinctUntilChanged()
                 .observeOn(schedulers.mainThread())
-                .compose(bindTestSubject())
+                .compose(bindStateSubject())
                 .subscribe { viewState?.renderView(it) }
     }
 

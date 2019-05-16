@@ -31,7 +31,7 @@ class DetailsActivityPresenterTest {
         val successState = DetailsViewState(Resource.success(result))
         verify(mockView, atLeastOnce()).renderView(loadingState)
         verify(mockView, atLeastOnce()).renderView(successState)
-        val t = sut.testSubject().test()
+        val t = sut.stateSubject().test()
         t.assertSubscribed()
             .assertValues(loadingState, successState)
             .assertNoErrors()
@@ -49,7 +49,7 @@ class DetailsActivityPresenterTest {
         val errorState = DetailsViewState(Resource.error(exception))
         verify(mockView, atLeastOnce()).renderView(loadingState)
         verify(mockView, atLeastOnce()).renderView(errorState)
-        val t = sut.testSubject().test()
+        val t = sut.stateSubject().test()
         t.assertValues(loadingState, errorState)
     }
 }
